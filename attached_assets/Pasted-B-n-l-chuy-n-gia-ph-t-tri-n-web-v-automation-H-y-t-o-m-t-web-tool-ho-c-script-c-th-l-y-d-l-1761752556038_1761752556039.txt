@@ -1,0 +1,50 @@
+Bạn là chuyên gia phát triển web và automation. 
+Hãy tạo một web tool (hoặc script) có thể lấy dữ liệu các lệnh copy trade đang mở từ URL:
+👉 https://www.bybit.com/copyMt5/trade-center/detail?providerMark=LKxdqx0s95ebyvGkS3uP9w%3D%3D&copyFrom=CTIndex&profileDay=7
+
+### Mục tiêu:
+- Tool này chỉ thu thập (scrape) thông tin công khai từ tab **"Trades"** trên trang copytrade Bybit.
+- Dữ liệu cần lấy: symbol, type (Buy/Sell), size, entry price, PnL, leverage, và thời gian mở lệnh.
+- Sau khi lấy dữ liệu, hiển thị trên giao diện web đơn giản (dạng bảng).
+- Tự động cập nhật dữ liệu mỗi 30 giây.
+- Hỗ trợ lọc theo symbol hoặc trạng thái lệnh.
+
+### Yêu cầu kỹ thuật:
+1. Sử dụng **Node.js + Express** làm backend.
+2. Dùng **Puppeteer** (hoặc Playwright) để scrape nội dung HTML từ URL trên, do dữ liệu này được render bằng JavaScript (SPA).
+3. Triển khai API endpoint `/api/trades` trả về JSON gồm danh sách các lệnh đang mở.
+4. Tạo frontend đơn giản (React hoặc Next.js, Tailwind CSS) để hiển thị dữ liệu từ API.
+5. Hiển thị loading, auto-refresh, và nút "Làm mới thủ công".
+6. Không lưu dữ liệu, chỉ đọc tạm thời.
+
+### Các bước thực hiện:
+1. Tạo script Puppeteer:
+   - Mở trang bằng chế độ headless.
+   - Đợi phần tử trong tab “Trades” xuất hiện.
+   - Trích xuất thông tin từng hàng trong bảng.
+   - Trả dữ liệu dưới dạng JSON.
+
+2. Tạo API trong Express:
+   - Route `/api/trades` gọi script Puppeteer, trả dữ liệu JSON.
+   - Cache dữ liệu trong 30 giây để tránh request liên tục.
+
+3. Tạo frontend React:
+   - Gọi API `/api/trades` định kỳ 30 giây/lần.
+   - Hiển thị bảng với các cột: Symbol | Type | Size | Entry | PnL | Leverage | Open Time.
+   - Thêm bộ lọc symbol, và đếm tổng số lệnh.
+
+4. Viết hướng dẫn deploy:
+   - Deploy trên Vercel hoặc render.com cho frontend.
+   - Backend deploy trên VPS hoặc Railway.app (Node.js).
+   - Cron job tự reload nếu bị lỗi scrape.
+
+### Lưu ý hợp lệ:
+- Tool chỉ đọc dữ liệu công khai, không đăng nhập, không truy cập API private của Bybit.
+- Không spam request, giới hạn 1 request / 30 giây.
+- Dữ liệu chỉ hiển thị để học tập và nghiên cứu automation.
+
+### Đầu ra mong muốn:
+- Code backend (Node.js + Puppeteer)
+- Code frontend (React + Tailwind)
+- Hướng dẫn run local: `npm install`, `npm run dev`
+- Trang web hiển thị được danh sách lệnh đang mở từ tab “Trades”.
